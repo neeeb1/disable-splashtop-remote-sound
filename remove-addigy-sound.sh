@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 splashtopDriverPath=/Library/Audio/Plug-Ins/HAL/SplashtopRemoteSound.driver
-
-[ -d $splashtopDriverPath ] && echo "Splashtop driver dir exists" || echo "Splashtop driver dir does not exist"
+killAudio=false
 
 if [[ -d $splashtopDriverPath ]]; then
     echo "Splashtop driver dir exists, attempting to uninstall..."
@@ -10,6 +9,13 @@ if [[ -d $splashtopDriverPath ]]; then
 
     if [[ -d $splashtopDriverPath ]]; then
         echo "Failed to remove driver..."
+    else
+        echo "Successfully removed driver"
+        if [ $killAudio ]; then
+            echo "Restarting audio service..."
+
+            pkill coreaudiod
+        fi
     fi
 else
     echo "Splashtop driver dir does not exist"
